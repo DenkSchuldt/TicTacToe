@@ -12,19 +12,21 @@ import java.util.ArrayList;
  */
 public class State {
     private int[][] chips = {{0,0,0},{0,0,0},{0,0,0}};
-    private int heuristicValue;
-    int player;
+    final private int heuristicValue;
+    private int bestValue;
+    final private int player;
     
     public State(int [][] chips, int player){
         this.chips = chips;
         this.player = player;
         this.heuristicValue = calculateHValue();
-        
+        //this.bestValue = heuristicValue;
     }
     
     public State(int player){
         this.player = player;
         this.heuristicValue  = calculateHValue();
+        //this.bestValue = heuristicValue;
     }
     public int[][] getChips() {
         return chips;
@@ -38,6 +40,17 @@ public class State {
         return heuristicValue;
     }
     
+    public int getBestValue(){
+        return bestValue;
+    }
+    
+    public void setBestValue(int value){
+        this.bestValue = value;
+    }
+    
+    public int getPlayer(){
+        return player;
+    }
     private int getPossibleWinnings(int player){
         int total = 0;
         if(chips[1][1] == player || chips[1][1] == 0){
@@ -98,7 +111,7 @@ public class State {
         if(isWinner())
             return 100;
         else
-            return getPossibleWinnings(this.player) - getPossibleWinnings(-this.player);
+            return getPossibleWinnings(1) - getPossibleWinnings(-1);
     }
     
     public ArrayList<State> createChilds(){
@@ -121,11 +134,16 @@ public class State {
         
     }
     
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString(){
         return ""+chips[0][0]+" "+chips[0][1]+" "+chips[0][2]+"\n"+
                   chips[1][0]+" "+chips[1][1]+" "+chips[1][2]+"\n"+
-                  chips[2][0]+" "+chips[2][1]+" "+chips[2][2]+" ";
+                  chips[2][0]+" "+chips[2][1]+" "+chips[2][2]+"\n "+
+                "Heuristic value: "+this.heuristicValue+" \n";
     }
     
     private int[][] duplicateChips(){

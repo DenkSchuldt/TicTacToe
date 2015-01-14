@@ -12,7 +12,7 @@ package tic.tac.toe;
 public class StateSpace {
     private State currentState;
     private Tree<State> treeSpace;
-    private int depth;
+    private final int depth;
     public StateSpace(State current, int depth){
         this.currentState = current;
         this.depth = depth;
@@ -61,4 +61,45 @@ public class StateSpace {
     public String toString(){
         return treeSpace.toString();
     }
+    
+    private int minimax(Tree<State> state){
+        if(!state.hasChildren()){
+            state.getNode().setBestValue(state.getNode().getHeuristicValue());
+            return state.getNode().getBestValue();   
+        }            
+        else{
+            int bestValue;
+            if(state.getNode().getPlayer() == -1){
+                bestValue = -100;
+            
+                for(Tree<State> child : state.getChildren()){
+                    int value = minimax(child);
+                    bestValue = Math.max(value, bestValue);
+                }
+                state.getNode().setBestValue(bestValue);
+                return bestValue;
+            }
+            else{
+                bestValue = 100;
+                for(Tree<State> child : state.getChildren()){
+                    int value = minimax(child);
+                    bestValue = Math.min(value, bestValue);
+                }
+                state.getNode().setBestValue(bestValue);
+                return bestValue;
+            }
+            
+        }            
+    }
+    
+    public State selectNextMove(){
+        int minmaxVal = minimax(this.treeSpace);
+        for(Tree<State> TreeState : treeSpace.getChildren()){
+            State state = TreeState.getNode();
+            if(state.getBestValue() == minmaxVal)
+                return state;
+        }
+        return null;
+    }
+    
 }
