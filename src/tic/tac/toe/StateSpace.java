@@ -37,13 +37,28 @@ public class StateSpace {
     }
     
     private void expandTree(Tree<State> tree){
-        if(this.treeSpace.hasChildren()){
-            for(Tree<State> childTree : this.treeSpace.getChildren()){
+        if(tree.hasChildren()){
+            for(Tree<State> childTree : tree.getChildren()){
                 expandTree(childTree);
             }
         }else{
             tree.setChildren(generateTree(tree.getNode(),1).getChildren());
         }
             
+    }
+    
+    public void updateStateSpace(State state){
+        treeSpace = treeSpace.getChildTree(state);
+        currentState = treeSpace.getNode();
+        expandTree(treeSpace);
+    }
+    
+    public Tree<State> getTreeSpace(){
+        return this.treeSpace;
+    }
+    
+    @Override
+    public String toString(){
+        return treeSpace.toString();
     }
 }

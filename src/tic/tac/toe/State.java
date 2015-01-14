@@ -137,8 +137,22 @@ public class State {
     }
     
     public boolean equals(State state2){
-        
-        
+        for(int i = 0; i < 3; i++){
+            for(int j = 0; j< 3; j++){
+                if(chips[i][j] != state2.chips[i][j])
+                    return false;
+            }
+        }
+        return true;
+    }
+    
+    public static boolean areEqual(State state1, State state2){
+        for(int i = 0; i < 3; i++){
+            for(int j = 0; j< 3; j++){
+                if(state1.chips[i][j] != state2.chips[i][j])
+                    return false;
+            }
+        }
         return true;
     }
     

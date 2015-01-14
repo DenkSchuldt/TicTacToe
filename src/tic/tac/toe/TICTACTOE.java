@@ -19,11 +19,14 @@ public class TICTACTOE {
     public static void main(String[] args) {
         // TODO code application logic here
        State beginning = new State(1);
-       System.out.println(beginning);
-       java.util.ArrayList<State> childs = beginning.createChilds();
-       for(State child: childs)
-           System.out.println(child);
-       System.out.println(beginning);
+       //System.out.println(beginning);
+       StateSpace tree = new StateSpace(beginning, 2);
+       //System.out.println(tree);
+       int[][] chips = {{0,0,0},{0,-1,0},{0,0,0}};
+       State newState = beginning.createChilds().get(4);
+       tree.updateStateSpace(newState);
+       System.out.println(tree);
+       //System.out.println(tree);
     }
     
 }

@@ -51,7 +51,7 @@ public class Tree<T> {
     public ArrayList<Tree<T>> getChildren() {
         return children;
     }
-
+    
     public void setChildren(ArrayList<Tree<T>> children) {
         this.children = children;
     }
@@ -60,4 +60,22 @@ public class Tree<T> {
         return !this.children.isEmpty();
     }
     
+    public Tree<T> getChildTree(T child){
+        for(Tree<T> tChild : children){
+            if(State.areEqual((State) child, (State) tChild.node))
+                return tChild;
+        }
+        return null;
+    }
+    
+    public String toString(){
+        String s = this.node.toString();
+        s += "\n";
+        for(Tree<T> child: this.children){
+            s += child.toString();
+            s += "\n";
+        }
+        
+        return s;
+    }
 }
