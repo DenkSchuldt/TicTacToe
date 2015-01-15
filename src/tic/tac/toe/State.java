@@ -109,7 +109,7 @@ public class State {
     
     private int calculateHValue(){
         if(isWinner())
-            return 100;
+            return 100*this.player;
         else
             return getPossibleWinnings(1) - getPossibleWinnings(-1);
     }
