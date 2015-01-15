@@ -22,15 +22,17 @@ public class StateSpace {
     final public Tree<State> generateTree(State state, int depth){
         java.util.ArrayList<State> childs = state.createChilds();
         Tree<State> tree = new Tree<State>(state);
-        if(depth == 1){    
-            for(State child: childs){
-                tree.addChild(child);
-            }
-         
-        }else{
-            for(State child: childs){
-                Tree<State> childTrees = generateTree(child, depth - 1);
-                tree.addChildTree(childTrees);
+        if(childs != null){
+            if(depth == 1){    
+                for(State child: childs){
+                    tree.addChild(child);
+                }
+             
+            }else{
+                for(State child: childs){
+                    Tree<State> childTrees = generateTree(child, depth - 1);
+                    tree.addChildTree(childTrees);
+                }
             }
         }
         return tree;
