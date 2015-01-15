@@ -9,6 +9,7 @@ package tic.tac.toe;
  *
  * @author gabo
  */
+enum Algorithm{MINIMAX, ALPHA_BETA};
 public class StateSpace {
     private State currentState;
     private Tree<State> treeSpace;
@@ -94,8 +95,42 @@ public class StateSpace {
         }            
     }
     
-    public State selectNextMove(){
-        int minmaxVal = minimax(this.treeSpace);
+     private int alphabeta(Tree<State> state, int alpha, int beta){
+        if(!state.hasChildren()){
+            int bestValue = state.getNode().getHeuristicValue();
+            state.getNode().setBestValue(bestValue);
+            return bestValue;  
+        }else{
+            int bestValue;
+            if(state.getNode().getPlayer() == -1){
+                bestValue = -100;
+                for(Tree<State> child : state.getChildren()){
+                    int value = alphabeta(child,alpha,beta);
+                    bestValue = Math.max(value, bestValue);
+                    int alpha1 = Math.max(bestValue, alpha);
+                    if(beta <= alpha1)
+                        break; // beta cut-off
+                }
+                state.getNode().setBestValue(bestValue);
+                return bestValue;
+            }else{
+                bestValue = 100;
+                for(Tree<State> child : state.getChildren()){
+                    int value = alphabeta(child,alpha,beta);
+                    bestValue = Math.min(value, bestValue);
+                    int beta1 = Math.min(bestValue, beta);
+                    if(beta1 <= alpha)
+                        break; // alpha cut-off
+                }
+                state.getNode().setBestValue(bestValue);
+                return bestValue;
+            }
+        }
+    }
+    
+    public State selectNextMove(Algorithm algorithm){
+        int minmaxVal = (algorithm == Algorithm.MINIMAX) ? 
+                minimax(this.treeSpace): alphabeta(this.treeSpace,-100,100);
         for(Tree<State> TreeState : treeSpace.getChildren()){
             State state = TreeState.getNode();
             if(state.getBestValue() == minmaxVal)
