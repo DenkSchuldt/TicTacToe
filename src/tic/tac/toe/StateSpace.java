@@ -5,6 +5,9 @@
  */
 
 package tic.tac.toe;
+
+import java.util.ArrayList;
+
 /**
  *
  * @author gabo
@@ -14,21 +17,27 @@ public class StateSpace {
     private State currentState;
     private Tree<State> treeSpace;
     private final int depth;
+    
     public StateSpace(State current, int depth){
         this.currentState = current;
         this.depth = depth;
-        this.treeSpace = generateTree(current, depth);
+        this.treeSpace = generateTree(current, depth);//generate StateSpace
     }
     
-    final public Tree<State> generateTree(State state, int depth){
-        java.util.ArrayList<State> childs = state.createChilds();
+    public State getCurrentState(){
+        return this.currentState;
+    }
+    
+    public Tree<State> generateTree(State state, int depth){
+        ArrayList<State> childs = state.createChilds();
+        //create all posibles board configuration and this point
         Tree<State> tree = new Tree<State>(state);
         if(childs != null){
+            //add childs to StateSpace
             if(depth == 1){    
                 for(State child: childs){
                     tree.addChild(child);
                 }
-             
             }else{
                 for(State child: childs){
                     Tree<State> childTrees = generateTree(child, depth - 1);
@@ -47,13 +56,17 @@ public class StateSpace {
         }else{
             tree.setChildren(generateTree(tree.getNode(),1).getChildren());
         }
-            
     }
     
-    public void updateStateSpace(State state){
-        treeSpace = treeSpace.getChildTree(state);
-        currentState = treeSpace.getNode();
-        expandTree(treeSpace);
+    public void updateStateSpace(State newState){
+        Tree<State>treeNew=treeSpace.getChildTree(newState);
+        if(treeNew==null){
+            this.treeSpace=this.treeSpace.addChild(newState);
+        }else{
+            this.treeSpace=treeNew;
+        }
+        this.expandTree(treeSpace);
+        this.currentState=this.treeSpace.getNode();
     }
     
     public Tree<State> getTreeSpace(){

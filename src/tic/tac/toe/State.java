@@ -80,7 +80,7 @@ public class State {
         return total;
     }
     
-    private boolean isWinner(){
+    public boolean isWinner(){
         if(chips[1][1] == player ){
            if((chips[0][2] == player) && (chips[2][0] == player))
                return true;
@@ -130,8 +130,6 @@ public class State {
             }
             return children;
         }
-       
-        
     }
     
     /**
@@ -146,7 +144,7 @@ public class State {
                 "Heuristic value: "+this.heuristicValue+" \n";
     }
     
-    private int[][] duplicateChips(){
+    public int[][] duplicateChips(){
         int [][] duplicate = {{chips[0][0],chips[0][1],chips[0][2]},
                                 {chips[1][0],chips[1][1],chips[1][2]},
                                 {chips[2][0],chips[2][1],chips[2][2]}};

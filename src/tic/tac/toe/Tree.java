@@ -12,12 +12,12 @@ import java.util.ArrayList;
  * @param <T>
  */
 public class Tree<T> {
-    private T node;
+    private T node;//content
     private Tree<T> parent;
     private ArrayList<Tree<T>> children;
     
     public Tree(T node){
-        this.node = node;
+        this.node = node;//root
         this.children = new ArrayList<Tree<T>>();
     }
     
@@ -26,15 +26,19 @@ public class Tree<T> {
         this.node = node;
     }
     
-    public Tree<T> addChild(T child){
-        Tree<T> childNode = new Tree<T>(child);
-        childNode.parent = this;
-        this.children.add(childNode);
+    public Tree<T> addChild(T child){//child represent a generic content within a node
+        Tree<T> childNode = new Tree<T>(child);//create a new node
+        childNode.parent = this;//set as parent to current node
+        this.addChildTree(childNode);
+        //this.children.add(childNode);
         return childNode;
     }
+
     public void addChildTree(Tree<T> tree){
+        //add a node into tree
         this.children.add(tree);
     }
+
     public T getNode() {
         return node;
     }
@@ -61,13 +65,16 @@ public class Tree<T> {
     }
     
     public Tree<T> getChildTree(T child){
+        
         for(Tree<T> tChild : children){
             if(State.areEqual((State) child, (State) tChild.node))
                 return tChild;
         }
+        
         return null;
     }
     
+    @Override
     public String toString(){
         String s = this.node.toString();
         s += "\n";
