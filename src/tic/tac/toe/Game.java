@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 public class Game implements Observer {
 
     private enum GameState {
-        WINNER, PLAYING
+        WINNER,DRAW,PLAYING
     }
     private int turn;
     private static final int playerOne = 1;
@@ -43,17 +43,23 @@ public class Game implements Observer {
         if (this.flagGameState == GameState.PLAYING) {
             turn = -this.turn;
             State currentState = tree.getCurrentState();
-            if (!currentState.isWinner()) {
-                if (this.turn == Game.playerTwo) {
-                    //play computer
-                    playComputer(board);
-                    turn = -this.turn;//get back turn 
+            if (!currentState.isComplete()) {
+                if (!currentState.isWinner()) {
+                    if (this.turn == Game.playerTwo) {
+                        //play computer
+                        playComputer(board);
+                        turn = -this.turn;//get back turn 
+                    }
+                } else {
+                    //JOptionPane.showMessageDialog(null,null,"El ganador es el jugador: "+this.turn,JOptionPane.PLAIN_MESSAGE);
+                    this.flagGameState = GameState.WINNER;
+                    ((Board) board).blockHandledOnClick();
+                    System.out.println("Ganador!!");
                 }
-            } else {
-                //JOptionPane.showMessageDialog(null,null,"El ganador es el jugador: "+this.turn,JOptionPane.PLAIN_MESSAGE);
-                this.flagGameState=GameState.WINNER;
-                ((Board)board).blockHandledOnClick();
-                System.out.println("Ganador!!");
+            }else{
+               System.out.println("Empate");
+               this.flagGameState=GameState.DRAW;
+               ((Board) board).blockHandledOnClick();
             }
         }
     }
@@ -63,8 +69,8 @@ public class Game implements Observer {
         tree.updateStateSpace(nextMove);
         ((Board) board).updateBoard(nextMove);
         if (nextMove.isWinner()) {
-            this.flagGameState=GameState.WINNER;
-             ((Board)board).blockHandledOnClick();
+            this.flagGameState = GameState.WINNER;
+            ((Board) board).blockHandledOnClick();
             System.out.println("Ganador computadora!!");
         }
     }
