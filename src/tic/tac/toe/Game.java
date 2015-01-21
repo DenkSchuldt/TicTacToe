@@ -27,7 +27,7 @@ public class Game implements Observer {
     private Observable Board_Observable;
 
     public Game(int initial_player, int depth) {
-        State beginning = new State(initial_player);
+        State beginning = new State(-initial_player);
         this.depth = depth;
         this.tree = new StateSpace(beginning, depth);
         this.turn = initial_player;
