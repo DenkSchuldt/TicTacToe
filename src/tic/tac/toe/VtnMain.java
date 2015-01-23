@@ -14,8 +14,11 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -47,6 +50,9 @@ public class VtnMain extends JFrame{
     
     private JPanel wrapper = null;
     private JPanel section = null;
+    private JLabel turn = null;
+    public boolean nought = true;
+    
     
     public VtnMain(){
         setTitle("TicTacToe");
@@ -121,7 +127,7 @@ public class VtnMain extends JFrame{
             user.addActionListener(new ActionListener(){
                 @Override
                 public void actionPerformed(ActionEvent e){
-                    System.out.println("User");
+                    instructions(false);
                 }
             });
             panel.add(user);
@@ -129,7 +135,7 @@ public class VtnMain extends JFrame{
             pc.addActionListener(new ActionListener(){
                 @Override
                 public void actionPerformed(ActionEvent e){
-                    System.out.println("PC");
+                    instructions(true);
                 }
             });
             panel.add(pc);
@@ -195,7 +201,7 @@ public class VtnMain extends JFrame{
         wrapper.updateUI();
     }
     
-    public void instructions(){
+    public void instructions(boolean againtsPc){
         wrapper.removeAll();
         setBackground(wrapper);
         JButton back = customJButton("img/back.png");
@@ -218,24 +224,56 @@ public class VtnMain extends JFrame{
 
         JLabel spaceTwo = new JLabel();
             spaceTwo.setOpaque(false);
-            spaceTwo.setPreferredSize(new Dimension(440,10));
+            spaceTwo.setPreferredSize(new Dimension(440,50));
         wrapper.add(spaceTwo);
         
-        String contentTextOne = String.format("<html><div WIDTH=%d style=\"margin-left:10px;text-align:justify;line-height:2px;\">%s</div><html>",300,"Tic-Tac-Toe is a game in which the first player to complete a pattern, wins.");
-        JLabel content = customJLabel(contentTextOne,Font.PLAIN,20);
+        if(againtsPc){
+            String instructions = String.format("<html><div WIDTH=%d style=\"margin-left:10px;text-align:justify;line-height:2px;\">%s</div><html>",300,"The first player puts a Nought in a cell, then the opponent will have to place a cross in another cell. Keep alternating moves until one of the players has drawn a row of three symbols or until no one can win.<br><br>Select a Search Algorithm:");
+            JLabel content = customJLabel(instructions,Font.PLAIN,20);
+            wrapper.add(content);      
+
+            JPanel algorithms = new JPanel();
+                algorithms.setOpaque(false);
+                algorithms.setPreferredSize(new Dimension(280,118));
+            JRadioButton jrb1 = customJRadioButton("MIN-MAX");
+            jrb1.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    gamePC("MIN-MAX");
+                }
+            });
+            algorithms.add(jrb1);
+            JRadioButton jrb2 = customJRadioButton("ALPHA-BETA Pruning");
+            jrb2.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    gamePC("ALPHA-BETA");
+                }
+            });
+            algorithms.add(jrb2);
+            ButtonGroup algorithmsGroup = new ButtonGroup();
+            algorithmsGroup.add(jrb1);
+            algorithmsGroup.add(jrb2);
+            wrapper.add(algorithms);
+        }else {
+            String instructions = String.format("<html><div WIDTH=%d style=\"margin-left:10px;text-align:justify;line-height:2px;\">%s</div><html>",300,"The first player puts a Nought in a cell, then the opponent will have to place a cross in another cell. Keep alternating moves until one of the players has drawn a row of three symbols or until no one can win.<br><br>");
+            JLabel content = customJLabel(instructions,Font.PLAIN,20);
             wrapper.add(content);      
             
-        String contentTextTwo = String.format("<html><div WIDTH=%d style=\"margin: 5px 0 0 10px;text-align:justify;line-height:10px;\">%s</div><html>",300,"This game let the user to select one of these two Search Algorithms based on Artificial Intelligence: MIN-MAX and ALPHA- BETA Pruning.");
-        JLabel contentTwo = customJLabel(contentTextTwo,Font.PLAIN,20);
-            wrapper.add(contentTwo);
+            JButton ok = customJButton("img/ok.png");
+            ok.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    gameUser();
+                }
+            });
+            wrapper.add(ok);
             
-        String contentTextThree = String.format("<html><div WIDTH=%d style=\"margin: 5px 0 0 10px;text-align:justify;line-height:10px;\">%s</div><html>",300,"Group Members:<br> * Rodrigo Castro<br> * Gabriel Falcones<br> * Denny K. Schuldt");
-        JLabel contentThree = customJLabel(contentTextThree,Font.PLAIN,20);
-            wrapper.add(contentThree);
-
-        String contentTextFour = String.format("<html><div WIDTH=%d style=\"margin: 5px 0 0 10px;text-align:justify;line-height:10px;\">%s</div><html>",300,"{rodfcast|gafalcon|dschuldt}<br>@espol.edu.ec"); 
-        JLabel contentFour = customJLabel(contentTextFour,Font.PLAIN,20);
-            wrapper.add(contentFour);
+            JLabel spaceThree = new JLabel();
+                spaceThree.setOpaque(false);
+                spaceThree.setPreferredSize(new Dimension(440,81));
+            wrapper.add(spaceThree);
+        }
        
         JPanel footer = new JPanel();
             footer.setOpaque(false);
@@ -244,6 +282,104 @@ public class VtnMain extends JFrame{
             footer.add(course);
         wrapper.add(footer);     
             
+        wrapper.updateUI();
+    }
+    
+    public void gamePC(String algorithm){
+        wrapper.removeAll();
+        setBackground(wrapper);
+        JButton back = customJButton("img/back.png");
+            back.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    instructions(true);
+                }
+            });
+        JLabel spaceOne = new JLabel();
+            spaceOne.setOpaque(false);
+            spaceOne.setPreferredSize(new Dimension(440,20));
+        wrapper.add(spaceOne);
+        wrapper.add(back);
+        
+        String courseTitle = String.format("<html><div WIDTH=%d style=\"margin-left:10px\">%s</div><html>",320,algorithm + " | Tic-Tac-Toe");
+        JLabel title = customJLabel(courseTitle,Font.BOLD,24);
+        wrapper.add(title);
+        wrapper.updateUI();
+    }
+    
+    public void gameUser(){
+        wrapper.removeAll();
+        setBackground(wrapper);
+        JButton back = customJButton("img/back.png");
+            back.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    init();
+                    newGame(section);
+                }
+            });
+        JLabel spaceOne = new JLabel();
+            spaceOne.setOpaque(false);
+            spaceOne.setPreferredSize(new Dimension(440,20));
+        wrapper.add(spaceOne);
+        wrapper.add(back);
+        
+        String courseTitle = String.format("<html><div WIDTH=%d style=\"margin-left:10px\">%s</div><html>",320,"Game | Tic-Tac-Toe");
+        JLabel title = customJLabel(courseTitle,Font.BOLD,24);
+        wrapper.add(title);
+        
+        JLabel spaceTwo = new JLabel();
+            spaceTwo.setOpaque(false);
+            spaceTwo.setPreferredSize(new Dimension(440,30));
+        wrapper.add(spaceTwo);
+        
+        JPanel tablero = new JPanel(new GridLayout(3,3));
+            tablero.setPreferredSize(new Dimension(300,300));
+            tablero.setOpaque(false);
+            for(int i=0; i<9; ++i){
+                final PnlToken token = new PnlToken();
+                token.addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if(!token.paint){
+                            token.paint = true;
+                            token.nought = nought;
+                            token.repaint();
+                            nought = !nought;
+                            if(nought) turn.setText(String.format("<html><div WIDTH=%d style=\"text-align:center;margin-top:10px;\">%s</div><html>",320,"*Nought's turn*"));
+                            else turn.setText(String.format("<html><div WIDTH=%d style=\"text-align:center;margin-top:10px;\">%s</div><html>",320,"*Cross's turn*"));
+                        }
+                    }
+                    @Override
+                    public void mousePressed(MouseEvent e) {}
+                    @Override
+                    public void mouseReleased(MouseEvent e) {}
+                    @Override
+                    public void mouseEntered(MouseEvent e) {}
+                    @Override
+                    public void mouseExited(MouseEvent e) {}
+                });
+                tablero.add(token);
+            }
+        wrapper.add(tablero);
+        
+        JLabel spaceThree = new JLabel();
+            spaceThree.setOpaque(false);
+            spaceThree.setPreferredSize(new Dimension(440,16));
+        wrapper.add(spaceThree);
+        
+        String turnText = String.format("<html><div WIDTH=%d style=\"text-align:center;margin-top:10px;\">%s</div><html>",320,"*Nought's turn*");
+        turn = customJLabel(turnText,Font.BOLD,18);
+        wrapper.add(turn);
+        
+        JLabel spaceFour = new JLabel();
+            spaceFour.setOpaque(false);
+            spaceFour.setPreferredSize(new Dimension(440,15));
+        wrapper.add(spaceFour);
+        
+        String courseText = String.format("<html><div WIDTH=%d style=\"text-align:center;margin-top:10px;\">%s</div><html>",320,"Artificial Intelligence<br>ESPOL 2014-II");
+        JLabel course = customJLabel(courseText,Font.BOLD,18);
+        wrapper.add(course);
         wrapper.updateUI();
     }
     

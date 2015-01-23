@@ -53,10 +53,10 @@ public class TICTACTOE{
     
     public static void main(String[] args) {
         new VtnMain();
-        WindowGame w=new WindowGame();
-        w.setSize(750,650);
-	w.setVisible(true);
-	w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        WindowGame w=new WindowGame();
+//        w.setSize(750,650);
+//	w.setVisible(true);
+//	w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
    
 }
