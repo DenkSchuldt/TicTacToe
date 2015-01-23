@@ -46,18 +46,16 @@ public class Game implements Observer {
             if (!currentState.isComplete()) {
                 if (!currentState.isWinner()) {
                     if (this.turn == Game.playerTwo) {
-                        //play computer
                         playComputer(board);
-                        turn = -this.turn;//get back turn 
+                        turn = -this.turn;
                     }
                 } else {
-                    //JOptionPane.showMessageDialog(null,null,"El ganador es el jugador: "+this.turn,JOptionPane.PLAIN_MESSAGE);
                     this.flagGameState = GameState.WINNER;
                     ((Board) board).blockHandledOnClick();
-                    System.out.println("Ganador!!");
+                    JOptionPane.showMessageDialog(null,null,"We have a winner! "+this.turn,JOptionPane.PLAIN_MESSAGE);
                 }
             }else{
-               System.out.println("Empate");
+               JOptionPane.showMessageDialog(null,null,"There's no winner.",JOptionPane.PLAIN_MESSAGE);
                this.flagGameState=GameState.DRAW;
                ((Board) board).blockHandledOnClick();
             }
@@ -71,7 +69,7 @@ public class Game implements Observer {
         if (nextMove.isWinner()) {
             this.flagGameState = GameState.WINNER;
             ((Board) board).blockHandledOnClick();
-            System.out.println("Ganador computadora!!");
+            JOptionPane.showMessageDialog(null,null,"We have a winner! Computer.",JOptionPane.PLAIN_MESSAGE);
         }
     }
 

@@ -12,35 +12,21 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.concurrent.Callable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.plaf.DimensionUIResource;
-import javax.swing.plaf.IconUIResource;
 
 /**
  *
@@ -51,7 +37,10 @@ public class VtnMain extends JFrame{
     private JPanel wrapper = null;
     private JPanel section = null;
     private JLabel turn = null;
+    private Board board = null;
+    private Game gameTicTacToe = null;
     public boolean nought = true;
+    public final int DIM = 3;
     
     
     public VtnMain(){
@@ -304,6 +293,57 @@ public class VtnMain extends JFrame{
         String courseTitle = String.format("<html><div WIDTH=%d style=\"margin-left:10px\">%s</div><html>",320,algorithm + " | Tic-Tac-Toe");
         JLabel title = customJLabel(courseTitle,Font.BOLD,24);
         wrapper.add(title);
+        
+        JLabel spaceTwo = new JLabel();
+            spaceTwo.setOpaque(false);
+            spaceTwo.setPreferredSize(new Dimension(440,30));
+        wrapper.add(spaceTwo);
+
+        setBoard();
+        PnlToken[][] chip_panel = this.board.getChipsPanel();
+        for (int i = 0; i < DIM; i++) {
+            for (int j = 0; j < DIM; j++) {
+                final PnlToken token = chip_panel[i][j];
+                token.addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if(!token.paint){
+                            token.paint = true;
+                            token.nought = false;
+                            token.repaint();
+                            turn.setText(String.format("<html><div WIDTH=%d style=\"text-align:center;margin-top:10px;\">%s</div><html>",320,"*User's turn*"));
+                        }
+                    }
+                    @Override
+                    public void mousePressed(MouseEvent e) {}
+                    @Override
+                    public void mouseReleased(MouseEvent e) {}
+                    @Override
+                    public void mouseEntered(MouseEvent e) {}
+                    @Override
+                    public void mouseExited(MouseEvent e) {}
+                });
+            }
+        }
+        
+        JLabel spaceThree = new JLabel();
+            spaceThree.setOpaque(false);
+            spaceThree.setPreferredSize(new Dimension(440,16));
+        wrapper.add(spaceThree);
+        
+        String turnText = String.format("<html><div WIDTH=%d style=\"text-align:center;margin-top:10px;\">%s</div><html>",320,"*Nought's turn*");
+        turn = customJLabel(turnText,Font.BOLD,18);
+        wrapper.add(turn);
+        
+        JLabel spaceFour = new JLabel();
+            spaceFour.setOpaque(false);
+            spaceFour.setPreferredSize(new Dimension(440,15));
+        wrapper.add(spaceFour);
+        
+        String courseText = String.format("<html><div WIDTH=%d style=\"text-align:center;margin-top:10px;\">%s</div><html>",320,"Artificial Intelligence<br>ESPOL 2014-II");
+        JLabel course = customJLabel(courseText,Font.BOLD,18);
+        wrapper.add(course);
+        
         wrapper.updateUI();
     }
     
@@ -452,6 +492,7 @@ public class VtnMain extends JFrame{
         wrapper.updateUI();
     }
     
+    
     public JRadioButton customJRadioButton(String text){
         JRadioButton radio = new JRadioButton(text);
             radio.setOpaque(false);
@@ -491,5 +532,11 @@ public class VtnMain extends JFrame{
         }
     }
     
+    public void setBoard(){
+        this.gameTicTacToe = new Game(1,3);
+        this.board = new Board();
+        this.board.setObserver(this.gameTicTacToe);
+        wrapper.add(board.getBoardPanel());        
+    }
     
 }

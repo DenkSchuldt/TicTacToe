@@ -5,13 +5,12 @@
  */
 package tic.tac.toe;
 
-import java.awt.Color;
-import java.awt.Graphics;
+
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.Polygon;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
@@ -28,24 +27,22 @@ import javax.swing.JPanel;
 public class Board extends Observable {
 
     private JPanel board_panel;
-    private GridLayout layout;
-    private JPanel[][] chip_panel;
+    private PnlToken[][] chip_panel;
     private LinkedList<Token> tokens;
-    private int dim = 3;
     private Observer Game_Observer;
     private final HandledOnClick handled;
+    private final int DIM = 3;
 
     public Board() {
-        this.board_panel = new JPanel();
-        this.layout = new GridLayout(dim, dim);
-        this.board_panel.setLayout(layout);
+        this.board_panel = new JPanel(new GridLayout(DIM,DIM));
+            this.board_panel.setPreferredSize(new Dimension(300,300));
+            this.board_panel.setOpaque(false);
         this.tokens = new LinkedList();
-        this.chip_panel = new JPanel[dim][dim];
+        this.chip_panel = new PnlToken[DIM][DIM];
         this.handled = new HandledOnClick();
-
-        for (int i = 0; i < dim; i++) {
-            for (int j = 0; j < dim; j++) {
-                this.chip_panel[i][j] = new JPanel();
+        for (int i = 0; i < DIM; i++) {
+            for (int j = 0; j < DIM; j++) {
+                this.chip_panel[i][j] = new PnlToken();
                 this.chip_panel[i][j].addMouseListener(this.handled);
                 this.board_panel.add(chip_panel[i][j]);
             }
@@ -64,21 +61,11 @@ public class Board extends Observable {
     public void updateGame(Point newPosition) {
         Game game = (Game) Game_Observer;
         State pastState = (State) game.getStateSpace().getCurrentState();
-        //System.out.println("estado pasado");
-        //System.out.println(pastState.toString());
-
         //build a new state taking reference last state in the game
         int[][] chips = pastState.duplicateChips();//copy board configuration
         chips[newPosition.x][newPosition.y] = game.getTurn();//next move
         State newState = new State(chips, game.getTurn());//newState represent a new board configuration
-
-       // System.out.println("actualizando el juego");
-       // System.out.println(newState.toString());
-
         game.getStateSpace().updateStateSpace(newState);
-
-//        Token newToken = new Token(newPosition, game.getTurn());
-  //      tokens.add(newToken);
         this.setChanged();//set that observable has changed
         this.notifyObservers();//notify to Game for update
     }
@@ -92,8 +79,8 @@ public class Board extends Observable {
         //get the coordinates x,y for draw the next move in the board panel
         LinkedList<Token> tmp = new LinkedList();
         //create a temporal list with the information abour new configuration board
-        for (int i = 0; i < dim; i++) {
-            for (int j = 0; j < dim; j++) {
+        for (int i = 0; i < DIM; i++) {
+            for (int j = 0; j < DIM; j++) {
                 chip = new_state.getChips()[i][j];
                 if (chip != 0) {
                     tmp.add(new Token(i, j, chip));
@@ -135,24 +122,19 @@ public class Board extends Observable {
     void drawMove(JPanel panelSelected) {
         Token token = tokens.getLast();
         int jugador = token.getJugador();
+        int width = panelSelected.getSize().width;
+        int height = panelSelected.getSize().height;
         Graphics2D painter = (Graphics2D) panelSelected.getGraphics();
         Image background;
-        int width=panelSelected.getSize().width;
-        int height=panelSelected.getSize().height;
-        String path;
         if (jugador == 1) {
-            path="ex.jpg";
+            background = new ImageIcon(getClass().getResource("img/cross.png")).getImage();
         } else {
-            path="circle.jpg";
+            background = new ImageIcon(getClass().getResource("img/nought.png")).getImage();
         }
-        background=new ImageIcon(getClass().getResource(path)).getImage();
-        if(background!=null){
-            painter.drawImage(background, 0, 0, width, height, null);        
-        }
+        painter.drawImage(background, 0, 0, width, height, null);
     }
 
     class HandledOnClick extends MouseAdapter {
-
         public void mouseClicked(MouseEvent evento) {
             JPanel panelSelected = (JPanel) evento.getSource();
             Point newPosition = getCoordinates(panelSelected);
@@ -164,26 +146,27 @@ public class Board extends Observable {
     }
     
     public void blockHandledOnClick(){
-        for(int i=0;i<dim;i++){
-           for(int j=0;j<dim;j++){
+        for(int i=0;i<DIM;i++){
+           for(int j=0;j<DIM;j++){
                this.chip_panel[i][j].removeMouseListener(handled);
            }
         }
     }
     
-
     public Point getCoordinates(JPanel selected) {
         JPanel currentPanel;
-        Point coordinate = null;
-        for (int i = 0; i < dim; i++) {
-            for (int j = 0; j < dim; j++) {
+        for (int i = 0; i < DIM; i++) {
+            for (int j = 0; j < DIM; j++) {
                 currentPanel = this.chip_panel[i][j];
                 if (currentPanel.equals(selected)) {
-                    coordinate = new Point(i, j);
-                    break;
+                    return new Point(i, j);
                 }
             }
         }
-        return coordinate;
+        return null;
+    }
+    
+    public PnlToken[][] getChipsPanel(){
+        return this.chip_panel;
     }
 }
