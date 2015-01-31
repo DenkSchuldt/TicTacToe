@@ -135,6 +135,7 @@ public class Board extends Observable {
     }
 
     class HandledOnClick extends MouseAdapter {
+        
         public void mouseClicked(MouseEvent evento) {
             JPanel panelSelected = (JPanel) evento.getSource();
             Point newPosition = getCoordinates(panelSelected);

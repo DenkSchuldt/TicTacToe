@@ -277,6 +277,7 @@ public class VtnMain extends JFrame{
     public void gamePC(String algorithm){
         wrapper.removeAll();
         setBackground(wrapper);
+        
         JButton back = customJButton("img/back.png");
             back.addActionListener(new ActionListener() {
                 @Override
@@ -299,7 +300,7 @@ public class VtnMain extends JFrame{
             spaceTwo.setPreferredSize(new Dimension(440,30));
         wrapper.add(spaceTwo);
 
-        setBoard();
+        setBoard(algorithm);
         PnlToken[][] chip_panel = this.board.getChipsPanel();
         for (int i = 0; i < DIM; i++) {
             for (int j = 0; j < DIM; j++) {
@@ -532,8 +533,9 @@ public class VtnMain extends JFrame{
         }
     }
     
-    public void setBoard(){
+    public void setBoard(String algorithm){
         this.gameTicTacToe = new Game(1,3);
+        this.gameTicTacToe.getStateSpace().setAlgorithm(algorithm);
         this.board = new Board();
         this.board.setObserver(this.gameTicTacToe);
         wrapper.add(board.getBoardPanel());        

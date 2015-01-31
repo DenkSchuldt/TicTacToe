@@ -63,7 +63,7 @@ public class Game implements Observer {
     }
 
     public void playComputer(Observable board) {
-        State nextMove = tree.selectNextMove(Algorithm.MINIMAX);
+        State nextMove = tree.selectNextMove();
         tree.updateStateSpace(nextMove);
         ((Board) board).updateBoard(nextMove);
         if (nextMove.isWinner()) {

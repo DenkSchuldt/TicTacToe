@@ -17,15 +17,25 @@ public class StateSpace {
     private State currentState;
     private Tree<State> treeSpace;
     private final int depth;
+    private Algorithm typeAlgorithm;
     
     public StateSpace(State current, int depth){
         this.currentState = current;
         this.depth = depth;
         this.treeSpace = generateTree(current, depth);//generate StateSpace
+        
     }
     
     public State getCurrentState(){
         return this.currentState;
+    }
+    
+    public void setAlgorithm(String algorithm){
+        if(algorithm.equals("MIN-MAX")){
+            this.typeAlgorithm=Algorithm.MINIMAX;
+        }else{
+            this.typeAlgorithm=Algorithm.ALPHA_BETA;
+        }
     }
     
     public Tree<State> generateTree(State state, int depth){
@@ -141,8 +151,8 @@ public class StateSpace {
         }
     }
     
-    public State selectNextMove(Algorithm algorithm){
-        int minmaxVal = (algorithm == Algorithm.MINIMAX) ? 
+    public State selectNextMove(){       
+        int minmaxVal = (typeAlgorithm == Algorithm.MINIMAX) ? 
                 minimax(this.treeSpace): alphabeta(this.treeSpace,-100,100);
         for(Tree<State> TreeState : treeSpace.getChildren()){
             State state = TreeState.getNode();
