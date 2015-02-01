@@ -82,14 +82,16 @@ public class Game implements Observer {
 
         VtnSearch = new VtnSearchProcess();
         drawGame();
-        VtnSearch.add(this.treePanel);
+       VtnSearch.add(this.treePanel);
 
     }
 
     public void playComputer(Observable board) {
         State nextMove = tree.selectNextMove();
+        
         showAISearch();
         tree.updateStateSpace(nextMove);
+        
         ((Board) board).updateBoard(nextMove);
         if (nextMove.isWinner()) {
             this.flagGameState = GameState.WINNER;
@@ -110,7 +112,6 @@ public class Game implements Observer {
             this.treeDrawer = new mxGraph();
             this.parentDrawer = treeDrawer.getDefaultParent();
             this.treePanel = new mxGraphComponent(this.treeDrawer);
-            //this.treePanel.setGraph(treeDrawer);
             this.treePanel.updateUI();
         } else {
             this.treePanel = new mxGraphComponent(this.treeDrawer);
@@ -174,7 +175,8 @@ public class Game implements Observer {
                 style);
         
         this.treeDrawer.insertEdge(parentDrawer, null, "Edge", rootObject, newRootObject);
-        this.drawChild(newRootObject, this.tree.getTreeSpace(), 1);
+        
+        this.drawChild(newRootObject, this.tree.getTreeSpace(),-1);
         this.treeDrawer.getModel().endUpdate();
         this.treePanel.updateUI();
     }

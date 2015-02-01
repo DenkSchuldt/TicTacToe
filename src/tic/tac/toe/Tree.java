@@ -65,12 +65,10 @@ public class Tree<T> {
     }
     
     public Tree<T> getChildTree(T child){
-        
         for(Tree<T> tChild : children){
             if(State.areEqual((State) child, (State) tChild.node))
                 return tChild;
-        }
-        
+        }        
         return null;
     }
     

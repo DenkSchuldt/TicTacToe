@@ -43,16 +43,14 @@ public class State {
         return this.pos_Y;
     }
 
-    public void setPosX(int x){
-        this.pos_X=x;
+    public void setPosX(int x) {
+        this.pos_X = x;
     }
-    
-    public void setPosY(int y){
-        this.pos_Y=y;
+
+    public void setPosY(int y) {
+        this.pos_Y = y;
     }
-    
-    
-    
+
     public void setChips(int[][] chips) {
         this.chips = chips;
     }
@@ -73,8 +71,69 @@ public class State {
         return player;
     }
 
+    private boolean rowEmpty(int row) {
+        boolean flag = false;
+        for (int i = 0; i < 3; i++) {
+            if (chips[row][i] == 0) {
+                flag = true;
+            } else {
+                flag = false;
+                break;
+            }
+        }
+        return flag;
+    }
+
+    private boolean columnEmpty(int col) {
+        boolean flag = false;
+        for (int i = 0; i < 3; i++) {
+            if (chips[i][col] == 0) {
+                flag = true;
+            } else {
+                flag = false;
+                break;
+            }
+        }
+        return flag;
+    }
+
+    private boolean diagonalEmpty(int diag) {
+        boolean flag = false;
+        for (int i = 0; i < 3; i++) {
+            if (chips[i][diag] == 0) {
+                flag = true;
+            } else {
+                flag = false;
+                break;
+            }
+            if (diag == 0) {
+                diag++;
+            } else {
+                diag--;
+            }
+        }
+        return flag;
+    }
+
     private int getPossibleWinnings(int player) {
         int total = 0;
+        for (int k = 0; k < 3; k++) {
+            if (rowEmpty(k)) {
+                total++;
+            }
+            if (columnEmpty(k)) {
+                total++;
+            }
+        }
+
+        if (diagonalEmpty(0)) {
+            total++;
+        }
+
+        if (diagonalEmpty(2)) {
+            total++;
+        }
+
         if (chips[1][1] == player || chips[1][1] == 0) {
             if ((chips[0][2] == player || chips[0][2] == 0) && (chips[2][0] == player || chips[2][0] == 0)) {
                 total++;
@@ -88,7 +147,6 @@ public class State {
             if ((chips[0][1] == player || chips[0][1] == 0) && (chips[2][1] == player || chips[2][1] == 0)) {
                 total++;
             }
-
         }
         if (chips[0][0] == player || chips[0][0] == 0) {
             if ((chips[1][0] == player || chips[1][0] == 0) && (chips[2][0] == player || chips[2][0] == 0)) {
@@ -106,7 +164,6 @@ public class State {
                 total++;
             }
         }
-
         return total;
     }
 
@@ -191,7 +248,6 @@ public class State {
      * @return
      */
     //@Override
-
     public String toString() {
         return "" + chips[0][0] + " " + chips[0][1] + " " + chips[0][2] + "\n"
                 + chips[1][0] + " " + chips[1][1] + " " + chips[1][2] + "\n"
@@ -199,14 +255,14 @@ public class State {
                // + "Heuristic value: " + this.heuristicValue + " \n"
                 + "Best value: " + this.bestValue + "\n";
     }
-    
- //   public String toString(){
-   //     return "x";
-    //}
 
-    //public String toString() {
-      //  return "Best value: " + this.bestValue + "\n";
+    //   public String toString(){
+    //     return "x";
     //}
+    //public String toString() {
+    //  return "Best value: " + this.bestValue + "\n";
+    //}
+    
     
     public int[][] duplicateChips() {
         int[][] duplicate = {{chips[0][0], chips[0][1], chips[0][2]},

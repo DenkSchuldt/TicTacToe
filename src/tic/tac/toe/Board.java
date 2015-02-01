@@ -68,8 +68,6 @@ public class Board extends Observable {
         State newState = new State(chips, game.getTurn());//newState represent a new board configuration
         game.getStateSpace().updateStateSpace(newState);
         
-        
-        
         this.setChanged();//set that observable has changed
         this.notifyObservers();//notify to Game for update
     }

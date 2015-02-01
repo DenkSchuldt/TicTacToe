@@ -48,6 +48,7 @@ public class StateSpace {
         ArrayList<State> childs = state.createChilds();
         //create all posibles board configuration and this point
         Tree<State> tree = new Tree<State>(state);
+        
         if(childs != null){
             //add childs to StateSpace
             if(depth == 1){    
@@ -61,7 +62,9 @@ public class StateSpace {
                 }
             }
         }
+        
         return tree;
+    
     }
     
     private void expandTree(Tree<State> tree){
@@ -75,15 +78,21 @@ public class StateSpace {
     }
     
     public void updateStateSpace(State newState){
+    
         Tree<State>treeNew=treeSpace.getChildTree(newState);
+        
         if(treeNew==null){
             this.treeSpace=this.treeSpace.addChild(newState);
         }else{
             this.treeSpace=treeNew;
         }
+        
         this.expandTree(treeSpace);
         this.currentState=this.treeSpace.getNode();
+        System.out.println("estado");
+        System.out.println(currentState.toString());
         pathStates.add(this.currentState);
+    
     }
     
     public Tree<State> getTreeSpace(){
@@ -99,7 +108,7 @@ public class StateSpace {
         if(!state.hasChildren()){
             state.getNode().setBestValue(state.getNode().getHeuristicValue());
             return state.getNode().getBestValue();   
-        }            
+        }
         else{
             int bestValue;
             if(state.getNode().getPlayer() == -1){
@@ -120,7 +129,8 @@ public class StateSpace {
                 state.getNode().setBestValue(bestValue);
                 return bestValue;
             }
-        }            
+        }
+        
     }
     
      private int alphabeta(Tree<State> state, int alpha, int beta){
@@ -157,8 +167,12 @@ public class StateSpace {
     }
     
     public State selectNextMove(){       
+        
+        System.out.println("inicial:"+this.treeSpace.getNode().toString());
+        
         int minmaxVal = (typeAlgorithm == Algorithm.MINIMAX) ? 
                 minimax(this.treeSpace): alphabeta(this.treeSpace,-100,100);
+        
         for(Tree<State> TreeState : treeSpace.getChildren()){
             State state = TreeState.getNode();
             if(state.getBestValue() == minmaxVal)
