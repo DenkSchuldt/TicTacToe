@@ -18,16 +18,22 @@ public class StateSpace {
     private Tree<State> treeSpace;
     private final int depth;
     private Algorithm typeAlgorithm;
-    
+    private ArrayList<State> pathStates;
+
     public StateSpace(State current, int depth){
         this.currentState = current;
         this.depth = depth;
         this.treeSpace = generateTree(current, depth);//generate StateSpace
-        
+        pathStates=new ArrayList();
+        pathStates.add(current);
     }
     
     public State getCurrentState(){
         return this.currentState;
+    }
+    
+    public ArrayList<State>getPath(){
+        return this.pathStates;
     }
     
     public void setAlgorithm(String algorithm){
@@ -77,6 +83,7 @@ public class StateSpace {
         }
         this.expandTree(treeSpace);
         this.currentState=this.treeSpace.getNode();
+        pathStates.add(this.currentState);
     }
     
     public Tree<State> getTreeSpace(){
@@ -97,7 +104,6 @@ public class StateSpace {
             int bestValue;
             if(state.getNode().getPlayer() == -1){
                 bestValue = -100;
-            
                 for(Tree<State> child : state.getChildren()){
                     int value = minimax(child);
                     bestValue = Math.max(value, bestValue);
@@ -114,7 +120,6 @@ public class StateSpace {
                 state.getNode().setBestValue(bestValue);
                 return bestValue;
             }
-            
         }            
     }
     
@@ -162,4 +167,8 @@ public class StateSpace {
         return null;
     }
     
+    public void drawTreeSpace(){
+        
+    
+    }
 }

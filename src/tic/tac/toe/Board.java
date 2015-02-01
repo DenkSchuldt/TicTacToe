@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 /**
@@ -66,6 +67,9 @@ public class Board extends Observable {
         chips[newPosition.x][newPosition.y] = game.getTurn();//next move
         State newState = new State(chips, game.getTurn());//newState represent a new board configuration
         game.getStateSpace().updateStateSpace(newState);
+        
+        
+        
         this.setChanged();//set that observable has changed
         this.notifyObservers();//notify to Game for update
     }
