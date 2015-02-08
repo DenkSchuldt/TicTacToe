@@ -243,10 +243,6 @@ public class State {
         }
     }
 
-    /**
-     *
-     * @return
-     */
     //@Override
     public String toString() {
         return "" + chips[0][0] + " " + chips[0][1] + " " + chips[0][2] + "\n"
@@ -256,14 +252,6 @@ public class State {
                 + "Best value: " + this.bestValue + "\n";
     }
 
-    //   public String toString(){
-    //     return "x";
-    //}
-    //public String toString() {
-    //  return "Best value: " + this.bestValue + "\n";
-    //}
-    
-    
     public int[][] duplicateChips() {
         int[][] duplicate = {{chips[0][0], chips[0][1], chips[0][2]},
         {chips[1][0], chips[1][1], chips[1][2]},

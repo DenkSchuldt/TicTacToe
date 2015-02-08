@@ -33,6 +33,7 @@ public class Board extends Observable {
     private Observer Game_Observer;
     private final HandledOnClick handled;
     private final int DIM = 3;
+    boolean againstPc = false;
 
     public Board() {
         this.board_panel = new JPanel(new GridLayout(DIM,DIM));
@@ -54,12 +55,15 @@ public class Board extends Observable {
         return this.board_panel;
     }
 
-    public void setObserver(Observer game) {
+    public void setObserver(Observer game, boolean againstPc) {
         this.Game_Observer = game;
+        this.againstPc = againstPc;
         this.addObserver(game);
     }
 
-    public void updateGame(Point newPosition) {
+    
+    // No busca el siguiente movimiento. Actualiza el arbol
+    public void updateGame(Point newPosition, boolean againstPc) {
         Game game = (Game) Game_Observer;
         State pastState = (State) game.getStateSpace().getCurrentState();
         //build a new state taking reference last state in the game
@@ -67,7 +71,6 @@ public class Board extends Observable {
         chips[newPosition.x][newPosition.y] = game.getTurn();//next move
         State newState = new State(chips, game.getTurn());//newState represent a new board configuration
         game.getStateSpace().updateStateSpace(newState);
-        
         this.setChanged();//set that observable has changed
         this.notifyObservers();//notify to Game for update
     }
@@ -137,14 +140,13 @@ public class Board extends Observable {
     }
 
     class HandledOnClick extends MouseAdapter {
-        
         public void mouseClicked(MouseEvent evento) {
             JPanel panelSelected = (JPanel) evento.getSource();
             Point newPosition = getCoordinates(panelSelected);
             Token newToken = new Token(newPosition, 1);
             tokens.add(newToken);
             updateBoard(panelSelected);
-            updateGame(newPosition);
+            updateGame(newPosition, againstPc);
         }
     }
     

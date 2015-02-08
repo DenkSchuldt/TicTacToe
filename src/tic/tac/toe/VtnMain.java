@@ -210,7 +210,7 @@ public class VtnMain extends JFrame{
         wrapper.updateUI();
     }
     
-    public void instructions(boolean againtsPc){
+    public void instructions(final boolean againtsPc){
         wrapper.removeAll();
         setBackground(wrapper);
         JButton back = customJButton("img/back.png");
@@ -236,55 +236,35 @@ public class VtnMain extends JFrame{
             spaceTwo.setPreferredSize(new Dimension(440,50));
         wrapper.add(spaceTwo);
         
-        if(againtsPc){
-            String instructions = String.format("<html><div WIDTH=%d style=\"margin-left:10px;text-align:justify;line-height:2px;\">%s</div><html>",300,"The first player puts a Nought in a cell, then the opponent will have to place a cross in another cell. Keep alternating moves until one of the players has drawn a row of three symbols or until no one can win.<br><br>Select a Search Algorithm:");
-            JLabel content = customJLabel(instructions,Font.PLAIN,20);
-            wrapper.add(content);      
+        String instructions = String.format("<html><div WIDTH=%d style=\"margin-left:10px;text-align:justify;line-height:2px;\">%s</div><html>",300,"The first player puts a Nought in a cell, then the opponent will have to place a cross in another cell. Keep alternating moves until one of the players has drawn a row of three symbols or until no one can win.<br><br>Select a Search Algorithm:");
+        JLabel content = customJLabel(instructions,Font.PLAIN,20);
+        wrapper.add(content);      
 
-            JPanel algorithms = new JPanel();
-                algorithms.setOpaque(false);
-                algorithms.setPreferredSize(new Dimension(280,118));
-            JRadioButton jrb1 = customJRadioButton("MIN-MAX");
-            jrb1.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    gamePC("MIN-MAX");
-                    minMax = true;
-                }
-            });
-            algorithms.add(jrb1);
-            JRadioButton jrb2 = customJRadioButton("ALPHA-BETA Pruning");
-            jrb2.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    gamePC("ALPHA-BETA");
-                    minMax = false;
-                }
-            });
-            algorithms.add(jrb2);
-            ButtonGroup algorithmsGroup = new ButtonGroup();
-            algorithmsGroup.add(jrb1);
-            algorithmsGroup.add(jrb2);
-            wrapper.add(algorithms);
-        }else {
-            String instructions = String.format("<html><div WIDTH=%d style=\"margin-left:10px;text-align:justify;line-height:2px;\">%s</div><html>",300,"The first player puts a Nought in a cell, then the opponent will have to place a cross in another cell. Keep alternating moves until one of the players has drawn a row of three symbols or until no one can win.<br><br>");
-            JLabel content = customJLabel(instructions,Font.PLAIN,20);
-            wrapper.add(content);      
-            
-            JButton ok = customJButton("img/ok.png");
-            ok.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    gameUser();
-                }
-            });
-            wrapper.add(ok);
-            
-            JLabel spaceThree = new JLabel();
-                spaceThree.setOpaque(false);
-                spaceThree.setPreferredSize(new Dimension(440,81));
-            wrapper.add(spaceThree);
-        }
+        JPanel algorithms = new JPanel();
+            algorithms.setOpaque(false);
+            algorithms.setPreferredSize(new Dimension(280,118));
+        JRadioButton jrb1 = customJRadioButton("MIN-MAX");
+        jrb1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gameStart("MIN-MAX",againtsPc);
+                minMax = true;
+            }
+        });
+        algorithms.add(jrb1);
+        JRadioButton jrb2 = customJRadioButton("ALPHA-BETA Pruning");
+        jrb2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gameStart("ALPHA-BETA",againtsPc);
+                minMax = false;
+            }
+        });
+        algorithms.add(jrb2);
+        ButtonGroup algorithmsGroup = new ButtonGroup();
+        algorithmsGroup.add(jrb1);
+        algorithmsGroup.add(jrb2);
+        wrapper.add(algorithms);
        
         JPanel footer = new JPanel();
             footer.setOpaque(false);
@@ -296,7 +276,7 @@ public class VtnMain extends JFrame{
         wrapper.updateUI();
     }
     
-    public void gamePC(String algorithm){
+    public void gameStart(String algorithm, boolean againtsPc){
         wrapper.removeAll();
         setBackground(wrapper);
         
@@ -322,7 +302,7 @@ public class VtnMain extends JFrame{
             spaceTwo.setPreferredSize(new Dimension(440,30));
         wrapper.add(spaceTwo);
 
-        setBoard(algorithm);
+        setBoard(algorithm, againtsPc);
         PnlToken[][] chip_panel = this.board.getChipsPanel();
         for (int i = 0; i < DIM; i++) {
             for (int j = 0; j < DIM; j++) {
@@ -368,113 +348,38 @@ public class VtnMain extends JFrame{
         
         JLabel spaceThree = new JLabel();
             spaceThree.setOpaque(false);
-            spaceThree.setPreferredSize(new Dimension(440,16));
+            if(!againtsPc) spaceThree.setPreferredSize(new Dimension(440,5));
+            else spaceThree.setPreferredSize(new Dimension(440,16));
         wrapper.add(spaceThree);
         
         String turnText = String.format("<html><div WIDTH=%d style=\"text-align:center;margin-top:10px;\">%s</div><html>",320,"*Nought's turn*");
         turn = customJLabel(turnText,Font.BOLD,18);
         wrapper.add(turn);
         
-        JLabel spaceFour = new JLabel();
-            spaceFour.setOpaque(false);
-            spaceFour.setPreferredSize(new Dimension(440,15));
-        wrapper.add(spaceFour);
-        
-        String courseText = String.format("<html><div WIDTH=%d style=\"text-align:center;margin-top:10px;\">%s</div><html>",320,"Artificial Intelligence<br>ESPOL 2014-II");
-        JLabel course = customJLabel(courseText,Font.BOLD,18);
-        wrapper.add(course);
-        
-        wrapper.updateUI();
-    }
-    
-    public void gameUser(){
-        wrapper.removeAll();
-        setBackground(wrapper);
-        JButton back = customJButton("img/back.png");
-            back.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    init();
-                    newGame(section);
-                }
-            });
-        JLabel spaceOne = new JLabel();
-            spaceOne.setOpaque(false);
-            spaceOne.setPreferredSize(new Dimension(440,20));
-        wrapper.add(spaceOne);
-        wrapper.add(back);
-        
-        String courseTitle = String.format("<html><div WIDTH=%d style=\"margin-left:10px\">%s</div><html>",320,"Game | Tic-Tac-Toe");
-        JLabel title = customJLabel(courseTitle,Font.BOLD,24);
-        wrapper.add(title);
-        
-        JLabel spaceTwo = new JLabel();
-            spaceTwo.setOpaque(false);
-            spaceTwo.setPreferredSize(new Dimension(440,30));
-        wrapper.add(spaceTwo);
-        
-        JPanel tablero = new JPanel(new GridLayout(3,3));
-            tablero.setPreferredSize(new Dimension(300,300));
-            tablero.setOpaque(false);
-            for(int i=0; i<9; ++i){
-                final PnlToken token;
-                if(i==0 || i==1 || i==3 || i==4)
-                    token = new PnlToken(0,0,1,1);
-                else if(i==2 || i==5)
-                    token = new PnlToken(0,0,1,0);
-                else if(i==7)
-                    token = new PnlToken(0,1,0,1);
-                else
-                    token = new PnlToken(0,0,0,0);
-                token.addMouseListener(new MouseListener() {
+        if(againtsPc){
+            JLabel spaceFour = new JLabel();
+                spaceFour.setOpaque(false);
+                spaceFour.setPreferredSize(new Dimension(440,15));
+            wrapper.add(spaceFour);
+        } else {
+            JButton suggestion = new JButton("<html><u>*Get Suggestion*</u><html>");
+                suggestion.setOpaque(false);
+                suggestion.setContentAreaFilled(false);
+                suggestion.setBorderPainted(false);
+                suggestion.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                suggestion.setFocusPainted(false);
+                suggestion.addActionListener(new ActionListener() {
                     @Override
-                    public void mouseClicked(MouseEvent e) {
-                        if(!token.paint){
-                            token.paint = true;
-                            token.nought = nought;
-                            token.repaint();
-                            try {
-                                if(soundOn){
-                                    player.play();
-                                }
-                            } catch (BasicPlayerException ex) {
-                                Logger.getLogger(VtnMain.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            nought = !nought;
-                            if(nought) turn.setText(String.format("<html><div WIDTH=%d style=\"text-align:center;margin-top:10px;\">%s</div><html>",320,"*Nought's turn*"));
-                            else turn.setText(String.format("<html><div WIDTH=%d style=\"text-align:center;margin-top:10px;\">%s</div><html>",320,"*Cross's turn*"));
-                        }
+                    public void actionPerformed(ActionEvent e) {
                     }
-                    @Override
-                    public void mousePressed(MouseEvent e) {}
-                    @Override
-                    public void mouseReleased(MouseEvent e) {}
-                    @Override
-                    public void mouseEntered(MouseEvent e) {}
-                    @Override
-                    public void mouseExited(MouseEvent e) {}
                 });
-                tablero.add(token);
-            }
-        wrapper.add(tablero);
-        
-        JLabel spaceThree = new JLabel();
-            spaceThree.setOpaque(false);
-            spaceThree.setPreferredSize(new Dimension(440,16));
-        wrapper.add(spaceThree);
-        
-        String turnText = String.format("<html><div WIDTH=%d style=\"text-align:center;margin-top:10px;\">%s</div><html>",320,"*Nought's turn*");
-        turn = customJLabel(turnText,Font.BOLD,18);
-        wrapper.add(turn);
-        
-        JLabel spaceFour = new JLabel();
-            spaceFour.setOpaque(false);
-            spaceFour.setPreferredSize(new Dimension(440,15));
-        wrapper.add(spaceFour);
+            wrapper.add(suggestion);
+        }
         
         String courseText = String.format("<html><div WIDTH=%d style=\"text-align:center;margin-top:10px;\">%s</div><html>",320,"Artificial Intelligence<br>ESPOL 2014-II");
         JLabel course = customJLabel(courseText,Font.BOLD,18);
         wrapper.add(course);
+        
         wrapper.updateUI();
     }
     
@@ -629,15 +534,15 @@ public class VtnMain extends JFrame{
         }
     }
     
-    public void setBoard(String algorithm){
-        this.gameTicTacToe = new Game(1,3);
+    public void setBoard(String algorithm, Boolean againstPc){
+        gameTicTacToe = new Game(1,3, againstPc);
         /*if(userFirst)
             this.gameTicTacToe = new Game(1,3);
         else
             this.gameTicTacToe = new Game(-1,3);*/
-        this.gameTicTacToe.getStateSpace().setAlgorithm(algorithm);
-        this.board = new Board();
-        this.board.setObserver(this.gameTicTacToe);
+        gameTicTacToe.getStateSpace().setAlgorithm(algorithm);
+        board = new Board();
+        board.setObserver(this.gameTicTacToe, againstPc);
         wrapper.add(board.getBoardPanel());        
     }
     
