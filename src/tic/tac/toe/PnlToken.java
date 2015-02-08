@@ -23,11 +23,12 @@ public class PnlToken extends JPanel{
     
     public boolean paint = false;
     public boolean nought = false;
-    public Image image = null;
+    public boolean sound = true;
+    private Image image = null;
 
-    public PnlToken(){ 
+    public PnlToken(int top, int left, int bottom, int right){ 
         setPreferredSize(new Dimension(100,100));
-        setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.WHITE));
+        setBorder(BorderFactory.createMatteBorder(top, left, bottom, right, Color.WHITE));
         setOpaque(false);
         setCursor(new Cursor(Cursor.HAND_CURSOR));
     }

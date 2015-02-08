@@ -5,6 +5,7 @@
  */
 package tic.tac.toe;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
@@ -15,14 +16,13 @@ import javax.swing.JFrame;
 public class VtnSearchProcess extends JFrame {
     
     public VtnSearchProcess() {
-        setSize(1300,720);
         setVisible(true);
+        setResizable(false);
+        setTitle("Search Process");
         setLocationRelativeTo(null);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);   
-        //setResizable(false);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(HIDE_ON_CLOSE);
     }
-    
-    
 
 }

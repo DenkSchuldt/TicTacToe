@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Observable;
 import java.util.Observer;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
@@ -21,20 +20,13 @@ import javax.swing.JOptionPane;
  */
 public class Game implements Observer {
 
-    private enum GameState {
-
-        WINNER, DRAW, PLAYING
-
-    }
+    private enum GameState { WINNER, DRAW, PLAYING }
     private int turn;
-    private static final int playerOne = 1;
-    private static final int playerTwo = -1;//can be computer
+    private static final int playerTwo = -1; //can be computer
     private GameState flagGameState;
     private StateSpace tree;
     private int depth;
     private VtnSearchProcess VtnSearch = null;
-    private ArrayList<State> pathStates;
-
     private mxGraph treeDrawer = null;
     private Object parentDrawer = null;
     private mxGraphComponent treePanel = null;
@@ -47,7 +39,6 @@ public class Game implements Observer {
         this.flagGameState = GameState.PLAYING;
         this.treeDrawer = new mxGraph();
         this.parentDrawer = treeDrawer.getDefaultParent();
-
     }
 
     public int getTurn() {
@@ -79,11 +70,9 @@ public class Game implements Observer {
     }
 
     public void showAISearch() {
-
         VtnSearch = new VtnSearchProcess();
         drawGame();
-       VtnSearch.add(this.treePanel);
-
+        VtnSearch.add(this.treePanel);
     }
 
     public void playComputer(Observable board) {

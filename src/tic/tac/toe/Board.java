@@ -43,7 +43,7 @@ public class Board extends Observable {
         this.handled = new HandledOnClick();
         for (int i = 0; i < DIM; i++) {
             for (int j = 0; j < DIM; j++) {
-                this.chip_panel[i][j] = new PnlToken();
+                this.chip_panel[i][j] = new PnlToken(0,0,0,0);
                 this.chip_panel[i][j].addMouseListener(this.handled);
                 this.board_panel.add(chip_panel[i][j]);
             }
