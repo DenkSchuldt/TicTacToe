@@ -5,7 +5,6 @@
  */
 package tic.tac.toe;
 
-
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
@@ -36,15 +35,15 @@ public class Board extends Observable {
     boolean againstPc = false;
 
     public Board() {
-        this.board_panel = new JPanel(new GridLayout(DIM,DIM));
-            this.board_panel.setPreferredSize(new Dimension(300,300));
-            this.board_panel.setOpaque(false);
+        this.board_panel = new JPanel(new GridLayout(DIM, DIM));
+        this.board_panel.setPreferredSize(new Dimension(300, 300));
+        this.board_panel.setOpaque(false);
         this.tokens = new LinkedList();
         this.chip_panel = new PnlToken[DIM][DIM];
         this.handled = new HandledOnClick();
         for (int i = 0; i < DIM; i++) {
             for (int j = 0; j < DIM; j++) {
-                this.chip_panel[i][j] = new PnlToken(0,0,0,0);
+                this.chip_panel[i][j] = new PnlToken(0, 0, 0, 0);
                 this.chip_panel[i][j].addMouseListener(this.handled);
                 this.board_panel.add(chip_panel[i][j]);
             }
@@ -61,7 +60,6 @@ public class Board extends Observable {
         this.addObserver(game);
     }
 
-    
     // No busca el siguiente movimiento. Actualiza el arbol
     public void updateGame(Point newPosition, boolean againstPc) {
         Game game = (Game) Game_Observer;
@@ -75,7 +73,7 @@ public class Board extends Observable {
         this.notifyObservers();//notify to Game for update
     }
 
-    public void updateBoard(JPanel panelSelected) {
+    public void updateBoard(PnlToken panelSelected) {
         this.drawMove(panelSelected);
     }
 
@@ -124,40 +122,49 @@ public class Board extends Observable {
         return flag;
     }
 
-    void drawMove(JPanel panelSelected) {
+    void drawMove(PnlToken panelSelected) {
         Token token = tokens.getLast();
         int jugador = token.getJugador();
         int width = panelSelected.getSize().width;
         int height = panelSelected.getSize().height;
         Graphics2D painter = (Graphics2D) panelSelected.getGraphics();
         Image background;
+        panelSelected.paint = true;
         if (jugador == 1) {
-            background = new ImageIcon(getClass().getResource("img/cross.png")).getImage();
+            panelSelected.nought=false;
         } else {
-            background = new ImageIcon(getClass().getResource("img/nought.png")).getImage();
+            panelSelected.nought=true;
         }
-        painter.drawImage(background, 0, 0, width, height, null);
+        panelSelected.repaint();
+        panelSelected.removeMouseListener(handled);
     }
 
     class HandledOnClick extends MouseAdapter {
+
         public void mouseClicked(MouseEvent evento) {
-            JPanel panelSelected = (JPanel) evento.getSource();
+            PnlToken panelSelected = (PnlToken) evento.getSource();
             Point newPosition = getCoordinates(panelSelected);
-            Token newToken = new Token(newPosition, 1);
+            Token newToken;
+            Game game = (Game) Game_Observer;
+            if (game.againstPC) {
+                newToken = new Token(newPosition, 1);
+            } else {
+                newToken = new Token(newPosition, game.getTurn());
+            }
             tokens.add(newToken);
             updateBoard(panelSelected);
             updateGame(newPosition, againstPc);
         }
     }
-    
-    public void blockHandledOnClick(){
-        for(int i=0;i<DIM;i++){
-           for(int j=0;j<DIM;j++){
-               this.chip_panel[i][j].removeMouseListener(handled);
-           }
+
+    public void blockHandledOnClick() {
+        for (int i = 0; i < DIM; i++) {
+            for (int j = 0; j < DIM; j++) {
+                this.chip_panel[i][j].removeMouseListener(handled);
+            }
         }
     }
-    
+
     public Point getCoordinates(JPanel selected) {
         JPanel currentPanel;
         for (int i = 0; i < DIM; i++) {
@@ -170,8 +177,8 @@ public class Board extends Observable {
         }
         return null;
     }
-    
-    public PnlToken[][] getChipsPanel(){
+
+    public PnlToken[][] getChipsPanel() {
         return this.chip_panel;
     }
 }

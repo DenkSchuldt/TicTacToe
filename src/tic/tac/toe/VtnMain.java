@@ -287,6 +287,7 @@ public class VtnMain extends JFrame{
                     instructions(true);
                 }
             });
+            
         JLabel spaceOne = new JLabel();
             spaceOne.setOpaque(false);
             spaceOne.setPreferredSize(new Dimension(440,20));
@@ -317,7 +318,7 @@ public class VtnMain extends JFrame{
                     token.setBorder(BorderFactory.createMatteBorder(0,1,1,0, Color.WHITE));
                 if(i==2 && j==2)
                     token.setBorder(BorderFactory.createMatteBorder(1,1,0,0, Color.WHITE));
-                token.addMouseListener(new MouseListener() {
+                /*token.addMouseListener(new MouseListener() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         if(!token.paint){
@@ -342,7 +343,7 @@ public class VtnMain extends JFrame{
                     public void mouseEntered(MouseEvent e) {}
                     @Override
                     public void mouseExited(MouseEvent e) {}
-                });
+                });*/
             }
         }
         
@@ -371,6 +372,8 @@ public class VtnMain extends JFrame{
                 suggestion.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        gameTicTacToe.getStateSpace().executeAlgorithm();
+                        gameTicTacToe.showAISearch();
                     }
                 });
             wrapper.add(suggestion);
@@ -523,6 +526,7 @@ public class VtnMain extends JFrame{
     }
     
     public void setBackground(JPanel background){
+        
         try{
             URL imagen = VtnMain.class.getResource("img/background.jpg");                                                    
             BufferedImage img = ImageIO.read(imagen);
@@ -532,14 +536,11 @@ public class VtnMain extends JFrame{
             e.printStackTrace();
             System.out.println("Background error");
         }
+
     }
     
     public void setBoard(String algorithm, Boolean againstPc){
         gameTicTacToe = new Game(1,3, againstPc);
-        /*if(userFirst)
-            this.gameTicTacToe = new Game(1,3);
-        else
-            this.gameTicTacToe = new Game(-1,3);*/
         gameTicTacToe.getStateSpace().setAlgorithm(algorithm);
         board = new Board();
         board.setObserver(this.gameTicTacToe, againstPc);

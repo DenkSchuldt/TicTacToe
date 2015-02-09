@@ -1,0 +1,63 @@
+<shapes>
+<shape name="tablero" aspect="fixed">
+	<foreground>
+		<strokecolor color="#000000"/>
+		<strokewidth width="4"/>
+		<linecap cap="round"/>		
+		<path crisp="0">
+			<move x="25" y="25"/>
+			<line x="25" y="175"/>
+		</path>
+		
+		<stroke/>
+		<path>
+			<move x="75" y="25"/>
+			<line x="75" y="175"/>
+		</path>
+		<stroke/>
+		
+		<path crisp="1">
+			<move x="-25" y="75"/>
+			<line x="125" y="75"/>
+		</path>
+		
+		<stroke/>
+		<path>
+			<move x="-25" y="125"/>
+			<line x="125" y="125"/>
+		</path>
+		<stroke/>
+	</foreground>
+</shape>
+
+<shape name="cross" aspect="fixed">
+	<foreground>
+		<strokecolor color="#000ff"/>
+                <fillcolor color="00000"/>
+		<strokewidth width="6"/>
+		<linecap cap="round"/>
+		<path crisp="0">
+			<move x="25" y="25"/>
+			<line x="75" y="75"/>
+		</path>
+		<stroke/>
+		<path>
+			<move x="75" y="25"/>
+			<line x="25" y="75"/>
+		</path>
+	<stroke/>
+</foreground>
+</shape>
+<shape name="tictactoe" aspect="fixed">
+    <background>
+        <ellipse x="0" y="0" w="100" h="100"/>
+        <strokecolor color="#000000"/>
+        <strokewidth width="4"/>
+        <fillcolor color="#ffffff"/>
+</background>
+    <foreground>
+        <fillstroke/>
+	<include-shape name="tablero" x="25" y="0" w="50" h="50"/>
+    </foreground>
+</shape>
+</shapes>

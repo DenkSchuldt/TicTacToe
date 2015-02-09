@@ -20,7 +20,9 @@ import javax.swing.JOptionPane;
  */
 public class Game implements Observer {
 
-    private enum GameState { WINNER, DRAW, PLAYING }
+    private enum GameState {
+        WINNER, DRAW, PLAYING
+    }
     private int turn;
     private static final int playerTwo = -1; //can be computer
     private GameState flagGameState;
@@ -33,6 +35,11 @@ public class Game implements Observer {
         this.turn = initial_player;
         this.flagGameState = GameState.PLAYING;
         this.againstPC = againstPc;
+        if (againstPc) {
+            System.out.println("contra la computadora");
+        } else {
+            System.out.println("contra otro jugador");
+        }
     }
 
     public int getTurn() {
@@ -47,7 +54,7 @@ public class Game implements Observer {
             if (!currentState.isComplete()) {
                 if (!currentState.isWinner()) {
                     if (this.turn == Game.playerTwo) {
-                        if(againstPC) {
+                        if (againstPC) {
                             playComputer(board);
                             turn = -this.turn;
                         }
@@ -66,21 +73,17 @@ public class Game implements Observer {
     }
 
     public void showAISearch() {
-        if(againstPC){
-            VtnSearchProcess vtnSearch = new VtnSearchProcess();
-            vtnSearch.create(this.tree);
-            vtnSearch.drawGame();
-        }
+        VtnSearchProcess vtnSearch = new VtnSearchProcess();
+        vtnSearch.create(this.tree);
+        vtnSearch.drawGame();
     }
 
     public void playComputer(Observable board) {
         State nextMove = tree.selectNextMove();
-        
         showAISearch();
         tree.updateStateSpace(nextMove);
-        
         ((Board) board).updateBoard(nextMove);
-        if (nextMove.isWinner()) {
+        if (nextMove.isWinner()){
             this.flagGameState = GameState.WINNER;
             ((Board) board).blockHandledOnClick();
             JOptionPane.showMessageDialog(null, null, "We have a winner! Computer.", JOptionPane.PLAIN_MESSAGE);
@@ -89,7 +92,7 @@ public class Game implements Observer {
             }
         }
     }
-
+    
     public StateSpace getStateSpace() {
         return this.tree;
     }

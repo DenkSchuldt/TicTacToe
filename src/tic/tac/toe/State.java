@@ -6,6 +6,23 @@
 package tic.tac.toe;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 /**
  *
@@ -17,13 +34,22 @@ public class State {
     final private int heuristicValue;
     private int bestValue;
     final private int player;
-
     private int pos_X, pos_Y;
+
+    public ArrayList<Token> tokens;
+    private ArrayList<Token> tokensDrawer;
 
     public State(int[][] chips, int player) {
         this.chips = chips;
         this.player = player;
         this.heuristicValue = calculateHValue();
+        tokens = new ArrayList();
+        tokensDrawer = new ArrayList();
+    }
+    
+    
+    public ArrayList<Token> getTokensDrawer(){
+        return this.tokensDrawer;
     }
 
     public State(int player) {
@@ -126,14 +152,6 @@ public class State {
             }
         }
 
-        if (diagonalEmpty(0)) {
-            total++;
-        }
-
-        if (diagonalEmpty(2)) {
-            total++;
-        }
-
         if (chips[1][1] == player || chips[1][1] == 0) {
             if ((chips[0][2] == player || chips[0][2] == 0) && (chips[2][0] == player || chips[2][0] == 0)) {
                 total++;
@@ -141,29 +159,30 @@ public class State {
             if ((chips[0][0] == player || chips[0][0] == 0) && (chips[2][2] == player || chips[2][2] == 0)) {
                 total++;
             }
-            if ((chips[1][0] == player || chips[1][0] == 0) && (chips[1][2] == player || chips[1][2] == 0)) {
+            if ((chips[1][0] == player) && (chips[1][2] == player)) {
                 total++;
             }
-            if ((chips[0][1] == player || chips[0][1] == 0) && (chips[2][1] == player || chips[2][1] == 0)) {
-                total++;
-            }
-        }
-        if (chips[0][0] == player || chips[0][0] == 0) {
-            if ((chips[1][0] == player || chips[1][0] == 0) && (chips[2][0] == player || chips[2][0] == 0)) {
-                total++;
-            }
-            if ((chips[0][1] == player || chips[0][1] == 0) && (chips[0][2] == player || chips[0][2] == 0)) {
+            if ((chips[0][1] == player) && (chips[2][1] == player)) {
                 total++;
             }
         }
-        if (chips[2][2] == player || chips[2][2] == 0) {
-            if ((chips[2][1] == player || chips[2][1] == 0) && (chips[2][0] == player || chips[2][0] == 0)) {
+        if (chips[0][0] == player) {
+            if ((chips[1][0] == player || chips[1][0] == 0) && (chips[2][0]==player || chips[2][0] == 0)) {
+                total++;
+            }
+            if ((chips[0][1] == player || chips[0][1] == 0 )&&(chips[0][2]  == player || chips[0][2] == 0 )) {
+                total++;
+            }
+        }
+        if (chips[2][2] == player) {
+            if ((chips[2][1] == player || chips[2][1] == 0 ) && (chips[2][0] == player || chips[2][0] == 0)) {
                 total++;
             }
             if ((chips[0][2] == player || chips[0][2] == 0) && (chips[1][2] == player || chips[1][2] == 0)) {
                 total++;
             }
         }
+        
         return total;
     }
 
@@ -221,8 +240,11 @@ public class State {
         if (isWinner()) {
             return 100 * this.player;
         } else {
-            return getPossibleWinnings(1) - getPossibleWinnings(-1);
+            int winnings=getPossibleWinnings(1);
+            int lost=getPossibleWinnings(-1);
+            return winnings-lost;
         }
+
     }
 
     public ArrayList<State> createChilds() {
@@ -245,11 +267,11 @@ public class State {
 
     //@Override
     public String toString() {
-        return "" + chips[0][0] + " " + chips[0][1] + " " + chips[0][2] + "\n"
-                + chips[1][0] + " " + chips[1][1] + " " + chips[1][2] + "\n"
-                + chips[2][0] + " " + chips[2][1] + " " + chips[2][2] + "\n "
-               // + "Heuristic value: " + this.heuristicValue + " \n"
-                + "Best value: " + this.bestValue + "\n";
+        return /*"" + chips[0][0] + " " + chips[0][1] + " " + chips[0][2] + "\n"
+                 + chips[1][0] + " " + chips[1][1] + " " + chips[1][2] + "\n"
+                 + chips[2][0] + " " + chips[2][1] + " " + chips[2][2] + "\n "
+                 + "Heuristic value: " + this.heuristicValue + " \n"+
+                 "Best value: " + this.bestValue + "\n";*/"";
     }
 
     public int[][] duplicateChips() {
@@ -280,6 +302,98 @@ public class State {
             }
         }
         return true;
+    }
+
+    public void generateTokens() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (chips[i][j] != 0) {
+                    Token t = new Token(i, j,chips[i][j]);
+                    this.tokens.add(t);
+                }
+            }
+        }
+    }
+
+    public void setPositionForDrawing() {       
+        
+        for(Token t: tokens){
+            Token newToken=null;
+            if(t.getPoint().x==0&&t.getPoint().y==0){
+                if(t.getJugador()==1){
+                    newToken=new Token(13,9,t.getJugador());
+                }else{
+                    newToken=new Token(18,15,t.getJugador());
+                }
+            }
+            if(t.getPoint().x==0&&t.getPoint().y==1){
+                if(t.getJugador()==1){
+                    newToken=new Token(37,9,t.getJugador());
+                }else{
+                    newToken=new Token(43,15,t.getJugador());    
+                }
+            }
+            if(t.getPoint().x==0&&t.getPoint().y==2){
+                if(t.getJugador()==1){
+                    newToken=new Token(60,9,t.getJugador());
+                }else{
+                    newToken=new Token(67,15,t.getJugador());    
+                }  
+            }
+            
+            if(t.getPoint().x==1&&t.getPoint().y==0){
+                if(t.getJugador()==1){
+                    newToken=new Token(10,35,t.getJugador());
+                }else{
+                    newToken=new Token(15,40,t.getJugador());    
+                } 
+            }
+            if(t.getPoint().x==1&&t.getPoint().y==1){
+                if(t.getJugador()==1){
+                     newToken=new Token(35,35,t.getJugador());
+                }else{
+                    newToken=new Token(42,40,t.getJugador());    
+                } 
+            }
+            if(t.getPoint().x==1&&t.getPoint().y==2){
+                if(t.getJugador()==1){
+                    newToken=new Token(63,35,t.getJugador());
+                }else{
+                    newToken=new Token(68,40,t.getJugador());  
+                }                 
+            }
+            
+            if(t.getPoint().x==2&&t.getPoint().y==0){
+                
+                if(t.getJugador()==1){
+                    newToken=new Token(13,60,t.getJugador());
+                }else{
+                    newToken=new Token(20,67,t.getJugador()); 
+                }
+                
+            }
+            if(t.getPoint().x==2&&t.getPoint().y==1){
+                
+                if(t.getJugador()==1){
+                    newToken=new Token(35,60,t.getJugador());
+                }else{
+                    newToken=new Token(42,67,t.getJugador());
+                }
+                
+                
+            }
+            if(t.getPoint().x==2&&t.getPoint().y==2){
+                if(t.getJugador()==1){
+                    newToken=new Token(63,60,t.getJugador());
+                }else{
+                    newToken=new Token(65,67,t.getJugador());  
+                }
+                
+            }
+            this.tokensDrawer.add(newToken);
+        }
+        
+        
     }
 
 }
