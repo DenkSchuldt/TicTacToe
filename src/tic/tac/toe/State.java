@@ -143,46 +143,28 @@ public class State {
 
     private int getPossibleWinnings(int player) {
         int total = 0;
-        for (int k = 0; k < 3; k++) {
-            if (rowEmpty(k)) {
+        if(chips[1][1] == player || chips[1][1] == 0){
+            if((chips[0][2] == player || chips[0][2] == 0) && (chips[2][0] == player || chips[2][0] == 0))
                 total++;
-            }
-            if (columnEmpty(k)) {
+            if((chips[0][0] == player || chips[0][0] == 0) && (chips[2][2] == player || chips[2][2] == 0))
                 total++;
-            }
+            if((chips[1][0] == player || chips[1][0] == 0) && (chips[1][2] == player || chips[1][2] == 0))
+                total++;
+            if((chips[0][1] == player || chips[0][1] == 0) && (chips[2][1] == player || chips[2][1] == 0))
+                total++;
         }
-
-        if (chips[1][1] == player || chips[1][1] == 0) {
-            if ((chips[0][2] == player || chips[0][2] == 0) && (chips[2][0] == player || chips[2][0] == 0)) {
+        if(chips[0][0] == player || chips[0][0] == 0){
+            if((chips[1][0] == player || chips[1][0] == 0) && (chips[2][0] == player || chips[2][0] == 0))
                 total++;
-            }
-            if ((chips[0][0] == player || chips[0][0] == 0) && (chips[2][2] == player || chips[2][2] == 0)) {
+            if((chips[0][1] == player || chips[0][1] == 0) && (chips[0][2] == player || chips[0][2] == 0))
                 total++;
-            }
-            if ((chips[1][0] == player) && (chips[1][2] == player)) {
-                total++;
-            }
-            if ((chips[0][1] == player) && (chips[2][1] == player)) {
-                total++;
-            }
         }
-        if (chips[0][0] == player) {
-            if ((chips[1][0] == player || chips[1][0] == 0) && (chips[2][0]==player || chips[2][0] == 0)) {
+        if(chips[2][2] == player || chips[2][2] == 0){
+            if((chips[2][1] == player || chips[2][1] == 0) && (chips[2][0] == player || chips[2][0] == 0))
                 total++;
-            }
-            if ((chips[0][1] == player || chips[0][1] == 0 )&&(chips[0][2]  == player || chips[0][2] == 0 )) {
+            if((chips[0][2] == player || chips[0][2] == 0) && (chips[1][2] == player || chips[1][2] == 0))
                 total++;
-            }
         }
-        if (chips[2][2] == player) {
-            if ((chips[2][1] == player || chips[2][1] == 0 ) && (chips[2][0] == player || chips[2][0] == 0)) {
-                total++;
-            }
-            if ((chips[0][2] == player || chips[0][2] == 0) && (chips[1][2] == player || chips[1][2] == 0)) {
-                total++;
-            }
-        }
-        
         return total;
     }
 
@@ -269,9 +251,9 @@ public class State {
     public String toString() {
         return /*"" + chips[0][0] + " " + chips[0][1] + " " + chips[0][2] + "\n"
                  + chips[1][0] + " " + chips[1][1] + " " + chips[1][2] + "\n"
-                 + chips[2][0] + " " + chips[2][1] + " " + chips[2][2] + "\n "
-                 + "Heuristic value: " + this.heuristicValue + " \n"+
-                 "Best value: " + this.bestValue + "\n";*/"";
+                 + chips[2][0] + " " + chips[2][1] + " " + chips[2][2] + "\n "*/
+                "\n\n\n\n\n"+"Heuristic value: " + this.heuristicValue + " \n";
+               //  "Best value: " + this.bestValue + "\n";*/"";
     }
 
     public int[][] duplicateChips() {

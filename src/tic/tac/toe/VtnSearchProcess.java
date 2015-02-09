@@ -195,7 +195,7 @@ public class VtnSearchProcess extends JFrame {
             for (State currentState : bestStates) {
                 i++;
                 readXML("state" + i + ".xml");
-                style = "shape=state" + i + ";shadow=1";
+                style = "shape=state" + i + ";shadow=1;fontColor=#000000,fontWidth=3";
                 childs[k] = this.treeDrawer.insertVertex(this.parentDrawer, null,
                         currentState,
                         currentState.getPosX(), currentState.getPosY(),
