@@ -14,17 +14,14 @@ import com.mxgraph.util.mxUtils;
 import com.mxgraph.util.mxXmlUtils;
 import com.mxgraph.view.mxGraph;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -42,16 +39,19 @@ public class VtnSearchProcess extends JFrame {
     private String style, styleEdge;
 
     public void create(StateSpace tree) {
-        setVisible(true);
-        setResizable(false);
+        
+        
         this.tree = tree;
         this.treeDrawer = new mxGraph();
         this.parentDrawer = treeDrawer.getDefaultParent();
         setTitle("Search Process Progress");
-        setLocationRelativeTo(null);
         setSize(1300, 720);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        setLocationRelativeTo(null);
+        setVisible(true);
+        setResizable(false);
+        this.toBack();
+        //setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         //this.readXML("shapes.xml");
         //style = "shape=tictactoe;shadow=1";
@@ -173,9 +173,7 @@ public class VtnSearchProcess extends JFrame {
         int k = 0,circle = 75;
         int i = id;
         Object childs[];
-        if (!root.hasChildren()) {
-            return;
-        } else {
+        if (root.hasChildren()) {
             ArrayList<State> bestStates = getBestState(root, -order);//select 3-first states for showing 
             content = root.getNode();
             this.setPositions(content, bestStates);
@@ -190,7 +188,7 @@ public class VtnSearchProcess extends JFrame {
                     callGenerator(currentState,i);
                 }
             }
-            i=0;
+
             i=id;
             for (State currentState : bestStates) {
                 i++;
@@ -321,6 +319,7 @@ public class VtnSearchProcess extends JFrame {
             // BorderBg borde = new BorderBg(img);
             ImageIcon img = new ImageIcon(imagen.getPath());
             background.setBackgroundImage(img);
+            
 
             // background.setBorder(borde);            
         } catch (Exception e) {

@@ -29,6 +29,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -63,6 +64,7 @@ public class VtnMain extends JFrame{
         wrapper = new JPanel();
         init();
         setContentPane(wrapper);
+        //setAlwaysOnTop(true);
         setLocationRelativeTo(null);
         setVisible(true);
         setResizable(false);
@@ -233,21 +235,35 @@ public class VtnMain extends JFrame{
 
         JLabel spaceTwo = new JLabel();
             spaceTwo.setOpaque(false);
-            spaceTwo.setPreferredSize(new Dimension(440,50));
+            spaceTwo.setPreferredSize(new Dimension(440,35));
         wrapper.add(spaceTwo);
         
         String instructions = String.format("<html><div WIDTH=%d style=\"margin-left:10px;text-align:justify;line-height:2px;\">%s</div><html>",300,"The first player puts a Nought in a cell, then the opponent will have to place a cross in another cell. Keep alternating moves until one of the players has drawn a row of three symbols or until no one can win.<br><br>Select a Search Algorithm:");
         JLabel content = customJLabel(instructions,Font.PLAIN,20);
         wrapper.add(content);      
 
+        JPanel depth = new JPanel();
+        depth.setOpaque(false);
+        JLabel textDepth = customJLabel("Profundidad de búsqueda: ", Font.PLAIN,14);
+        String depths[] = { "2", "3", "4", "5", "6"}; 
+        depth.add(textDepth);
+        final JComboBox depth_cb = new JComboBox(depths);
+        depth_cb.setSelectedIndex(1);
+        depth.add(depth_cb);
+        
+        
+        
         JPanel algorithms = new JPanel();
             algorithms.setOpaque(false);
-            algorithms.setPreferredSize(new Dimension(280,118));
+            algorithms.setPreferredSize(new Dimension(280,70));
         JRadioButton jrb1 = customJRadioButton("MIN-MAX");
+        
         jrb1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                gameStart("MIN-MAX",againtsPc);
+                String depth = depth_cb.getSelectedItem().toString();
+                System.out.println(depth);
+                gameStart("MIN-MAX",againtsPc,Integer.parseInt(depth));
                 minMax = true;
             }
         });
@@ -256,7 +272,9 @@ public class VtnMain extends JFrame{
         jrb2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                gameStart("ALPHA-BETA",againtsPc);
+                String depth = depth_cb.getSelectedItem().toString();
+                System.out.println(depth);
+                gameStart("ALPHA-BETA",againtsPc, Integer.parseInt(depth));
                 minMax = false;
             }
         });
@@ -265,7 +283,9 @@ public class VtnMain extends JFrame{
         algorithmsGroup.add(jrb1);
         algorithmsGroup.add(jrb2);
         wrapper.add(algorithms);
-       
+        
+        
+        wrapper.add(depth);
         JPanel footer = new JPanel();
             footer.setOpaque(false);
         String courseText = String.format("<html><div WIDTH=%d style=\"text-align:center;margin-top:10px;\">%s</div><html>",320,"Artificial Intelligence<br>ESPOL 2014-II");
@@ -276,7 +296,7 @@ public class VtnMain extends JFrame{
         wrapper.updateUI();
     }
     
-    public void gameStart(String algorithm, boolean againtsPc){
+    public void gameStart(String algorithm, boolean againtsPc, int depth){
         wrapper.removeAll();
         setBackground(wrapper);
         
@@ -303,7 +323,7 @@ public class VtnMain extends JFrame{
             spaceTwo.setPreferredSize(new Dimension(440,30));
         wrapper.add(spaceTwo);
 
-        setBoard(algorithm, againtsPc);
+        setBoard(algorithm, againtsPc, depth);
         PnlToken[][] chip_panel = this.board.getChipsPanel();
         for (int i = 0; i < DIM; i++) {
             for (int j = 0; j < DIM; j++) {
@@ -539,8 +559,8 @@ public class VtnMain extends JFrame{
 
     }
     
-    public void setBoard(String algorithm, Boolean againstPc){
-        gameTicTacToe = new Game(1,3, againstPc);
+    public void setBoard(String algorithm, Boolean againstPc, int depth){
+        gameTicTacToe = new Game(1,depth, againstPc);
         gameTicTacToe.getStateSpace().setAlgorithm(algorithm);
         board = new Board();
         board.setObserver(this.gameTicTacToe, againstPc);

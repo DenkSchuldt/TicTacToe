@@ -28,6 +28,7 @@ public class Game implements Observer {
     private GameState flagGameState;
     private StateSpace tree;
     public boolean againstPC = false;
+    private VtnSearchProcess vtnSearch;
 
     public Game(int initial_player, int depth, boolean againstPc) {
         State beginning = new State(-initial_player);
@@ -62,7 +63,9 @@ public class Game implements Observer {
                 } else {
                     this.flagGameState = GameState.WINNER;
                     ((Board) board).blockHandledOnClick();
+                   
                     JOptionPane.showMessageDialog(null, null, "We have a winner " + this.turn, JOptionPane.PLAIN_MESSAGE);
+                    
                 }
             } else {
                 JOptionPane.showMessageDialog(null, null, "We have is a tie.", JOptionPane.PLAIN_MESSAGE);
@@ -71,9 +74,14 @@ public class Game implements Observer {
             }
         }
     }
+    public void closeSearchTree(){
+        if(vtnSearch != null)
+            vtnSearch.dispose();
+    }
 
     public void showAISearch() {
-        VtnSearchProcess vtnSearch = new VtnSearchProcess();
+        closeSearchTree();
+        vtnSearch = new VtnSearchProcess();
         vtnSearch.create(this.tree);
         vtnSearch.drawGame();
     }
