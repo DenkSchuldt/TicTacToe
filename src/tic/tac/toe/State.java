@@ -252,7 +252,7 @@ public class State {
         return /*"" + chips[0][0] + " " + chips[0][1] + " " + chips[0][2] + "\n"
                  + chips[1][0] + " " + chips[1][1] + " " + chips[1][2] + "\n"
                  + chips[2][0] + " " + chips[2][1] + " " + chips[2][2] + "\n "*/
-                "\n\n\n\n\n"+"Heuristic value: " + this.heuristicValue + " \n";
+                "\n\n\n\n\n"+"H. value: " + this.heuristicValue + " \n";
                //  "Best value: " + this.bestValue + "\n";*/"";
     }
 

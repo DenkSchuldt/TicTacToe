@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -37,25 +38,22 @@ public class VtnSearchProcess extends JFrame {
     private Object parentDrawer = null;
     private StateSpace tree;
     private String style, styleEdge;
-
+     JScrollPane pane;
     public void create(StateSpace tree) {
-        
-        
         this.tree = tree;
         this.treeDrawer = new mxGraph();
         this.parentDrawer = treeDrawer.getDefaultParent();
         setTitle("Search Process Progress");
         setSize(1300, 720);
-        
         setLocationRelativeTo(null);
         setVisible(true);
         setResizable(false);
         this.toBack();
-        //setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
-        //this.readXML("shapes.xml");
-        //style = "shape=tictactoe;shadow=1";
         styleEdge = "fontColor=000000;fontSize=18;fontWidth=3;strokeColor=000000";
+        
+        pane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        
     }
 
     public void initTreePanel() {
@@ -72,7 +70,10 @@ public class VtnSearchProcess extends JFrame {
     public void drawGame() {
         this.initTreePanel();
         this.setBackground(this.treePanel);
+        //this.add(this.treePanel);
+        this.add(pane);
         this.add(this.treePanel);
+        
         int circle = 75;
         int separateX = 20;
         int rootTreeX = separateX + this.getWidth() / 2;
@@ -87,7 +88,7 @@ public class VtnSearchProcess extends JFrame {
         emptyState.setPosY(rootTreeY);
         callGenerator(emptyState,"#ffcc00",0);
         this.readXML("state" + 0 + ".xml");
-        String style = "shape=state0";
+        String style = "shape=state0;shadow=1;fontColor=#000000";
         Object rootObject = this.treeDrawer.insertVertex(parentDrawer, null,
                 emptyState,
                 emptyState.getPosX(),
@@ -111,7 +112,7 @@ public class VtnSearchProcess extends JFrame {
                 currentState.setPosX(parentState.getPosX());
                 currentState.setPosY(parentState.getPosY() + 100);
                 readXML("state" + i + ".xml");
-                style = "shape=state" + i + ";shadow=1";
+                style = "shape=state" + i + ";shadow=1;fontColor=#000000";
                 childObject = this.treeDrawer.insertVertex(parentDrawer, null,
                         currentState,
                         currentState.getPosX(),
@@ -129,7 +130,7 @@ public class VtnSearchProcess extends JFrame {
         newRoot.setPosY(parentState.getPosY() + 100);
         callGenerator(newRoot,"#ffcc00", i);
         readXML("state" + i + ".xml");
-        style = "shape=state" + i + ";shadow=1";
+        style = "shape=state" + i + ";shadow=1;fontColor=#000000";
 
         Object newRootObject = this.treeDrawer.insertVertex(parentDrawer, null,
                 newRoot,
@@ -140,7 +141,7 @@ public class VtnSearchProcess extends JFrame {
         this.treeDrawer.insertEdge(parentDrawer, null, "   " + parentState.getBestValue(),
                 rootObject, newRootObject, styleEdge);
 
-        this.drawChild(newRootObject, this.tree.getTreeSpace(), -1, i);
+        this.drawChild(newRootObject, this.tree.getTreeSpace(),0, -1, i);
         this.treeDrawer.getModel().endUpdate();
         this.treePanel.updateUI();
     }
@@ -167,19 +168,18 @@ public class VtnSearchProcess extends JFrame {
         }
     }
 
-    public void drawChild(Object padre, Tree<State> root, int order, int id) {
+    public void drawChild(Object padre, Tree<State> root,int level, int order, int id) {
         State content;
         State bestState;
         int k = 0,circle = 75;
         int i = id;
         Object childs[];
-        if (root.hasChildren()) {
+        if (root.hasChildren()&&level<4) {
             ArrayList<State> bestStates = getBestState(root, -order);//select 3-first states for showing 
             content = root.getNode();
             this.setPositions(content, bestStates);
             childs = new Object[3];
             bestState = bestStates.get(0);
-            //int j = i;
             for (State currentState : bestStates) {
                 i++;
                 if(i-1==id){
@@ -193,7 +193,7 @@ public class VtnSearchProcess extends JFrame {
             for (State currentState : bestStates) {
                 i++;
                 readXML("state" + i + ".xml");
-                style = "shape=state" + i + ";shadow=1;fontColor=#000000,fontWidth=3";
+                style = "shape=state" + i + ";shadow=1;fontColor=#000000";
                 childs[k] = this.treeDrawer.insertVertex(this.parentDrawer, null,
                         currentState,
                         currentState.getPosX(), currentState.getPosY(),
@@ -201,7 +201,7 @@ public class VtnSearchProcess extends JFrame {
                 this.treeDrawer.insertEdge(parentDrawer, null, "   " + currentState.getBestValue(), padre, childs[k], styleEdge);
                 k++; 
             }
-            this.drawChild(childs[0], root.getChildTree(bestState), -order, i);
+            this.drawChild(childs[0], root.getChildTree(bestState),level+1,-order, i);
         }
     }
 

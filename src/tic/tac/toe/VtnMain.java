@@ -244,7 +244,7 @@ public class VtnMain extends JFrame{
 
         JPanel depth = new JPanel();
         depth.setOpaque(false);
-        JLabel textDepth = customJLabel("Profundidad de búsqueda: ", Font.PLAIN,14);
+        JLabel textDepth = customJLabel("Depth Search: ", Font.PLAIN,14);
         String depths[] = { "2", "3", "4", "5", "6"}; 
         depth.add(textDepth);
         final JComboBox depth_cb = new JComboBox(depths);

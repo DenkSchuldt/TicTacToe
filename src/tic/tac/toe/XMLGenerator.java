@@ -253,7 +253,7 @@ public class XMLGenerator {
         back.appendChild(strokeColor);
         
         Element strokeWidth=document.createElement("strokeWidth");
-        strokeWidth.setAttribute("width","4");
+        strokeWidth.setAttribute("width","2");
         back.appendChild(strokeWidth);
         
         Element fillColor=document.createElement("color");

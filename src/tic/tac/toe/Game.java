@@ -5,8 +5,7 @@
  */
 package tic.tac.toe;
 
-import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.view.mxGraph;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
